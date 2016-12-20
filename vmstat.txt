@@ -1,0 +1,177 @@
+VMSTAT(8)                Linux Administrator’s Manual                VMSTAT(8)
+
+
+
+NNAAMMEE
+       vmstat - Report virtual memory statistics
+
+SSYYNNOOPPSSIISS
+       vvmmssttaatt [--aa] [--nn] [--tt] [--SS uunniitt] [_d_e_l_a_y [ _c_o_u_n_t]]
+       vvmmssttaatt [--ss] [--nn] [--SS uunniitt]
+       vvmmssttaatt [--mm] [--nn] [_d_e_l_a_y [ _c_o_u_n_t]]
+       vvmmssttaatt [--dd] [--nn] [_d_e_l_a_y [ _c_o_u_n_t]]
+       vvmmssttaatt [--pp ddiisskk ppaarrttiittiioonn] [--nn] [_d_e_l_a_y [ _c_o_u_n_t]]
+       vvmmssttaatt [--ff]
+       vvmmssttaatt [--VV]
+
+DDEESSCCRRIIPPTTIIOONN
+       vvmmssttaatt  reports  information about processes, memory, paging, block IO,
+       traps, and cpu activity.
+
+       The first report produced gives averages since the last reboot.   Addi-
+       tional  reports  give information on a sampling period of length _d_e_l_a_y.
+       The process and memory reports are instantaneous in either case.
+
+
+   OOppttiioonnss
+       The --aa switch displays active/inactive memory, given a 2.5.41 kernel or
+       better.
+
+       The  --ff  switch displays the number of forks since boot.  This includes
+       the fork, vfork, and clone system calls, and is equivalent to the total
+       number  of  tasks  created.  Each process is represented by one or more
+       tasks, depending on thread usage.  This display does not repeat.
+
+       The --tt switch adds timestamp to the output.
+
+       The --mm switch displays slabinfo.
+
+       The --nn switch causes the header to be displayed only once  rather  than
+       periodically.
+
+       The  --ss  switch  displays  a table of various event counters and memory
+       statistics. This display does not repeat.
+
+       _d_e_l_a_y is the delay between updates in seconds.  If no delay  is  speci-
+       fied, only one report is printed with the average values since boot.
+
+       _c_o_u_n_t  is the number of updates.  If no count is specified and delay is
+       defined, _c_o_u_n_t defaults to infinity.
+
+       The --dd reports disk statistics (2.5.70 or above required)
+
+       The --ww enlarges field width for big memory sizes
+
+       The --pp followed by some partition name for detailed statistics  (2.5.70
+       or above required)
+
+       The  --SS  followed  by  k  or K or m or M switches outputs between 1000,
+       1024, 1000000, or 1048576 bytes
+
+       The --VV switch results in displaying version information.
+
+
+FFIIEELLDD DDEESSCCRRIIPPTTIIOONN FFOORR VVMM MMOODDEE
+   PPrrooccss
+       r: The number of processes waiting for run time.
+       b: The number of processes in uninterruptible sleep.
+
+
+   MMeemmoorryy
+       swpd: the amount of virtual memory used.
+       free: the amount of idle memory.
+       buff: the amount of memory used as buffers.
+       cache: the amount of memory used as cache.
+       inact: the amount of inactive memory. (-a option)
+       active: the amount of active memory. (-a option)
+
+
+   SSwwaapp
+       si: Amount of memory swapped in from disk (/s).
+       so: Amount of memory swapped to disk (/s).
+
+
+   IIOO
+       bi: Blocks received from a block device (blocks/s).
+       bo: Blocks sent to a block device (blocks/s).
+
+
+   SSyysstteemm
+       in: The number of interrupts per second, including the clock.
+       cs: The number of context switches per second.
+
+   CCPPUU
+       These are percentages of total CPU time.
+       us: Time spent running non-kernel code. (user time, including nice time)
+       sy: Time spent running kernel code. (system time)
+       id: Time spent idle. Prior to Linux 2.5.41, this includes IO-wait time.
+       wa: Time spent waiting for IO. Prior to Linux 2.5.41, included in idle.
+       st: Time stolen from a virtual machine. Prior to Linux 2.6.11, unknown.
+
+
+
+FFIIEELLDD DDEESSCCRRIIPPTTIIOONN FFOORR DDIISSKK MMOODDEE
+   RReeaaddss
+       total: Total reads completed successfully
+       merged: grouped reads (resulting in one I/O)
+       sectors: Sectors read successfully
+       ms: milliseconds spent reading
+
+
+   WWrriitteess
+       total: Total writes completed successfully
+       merged: grouped writes (resulting in one I/O)
+       sectors: Sectors written successfully
+       ms: milliseconds spent writing
+
+
+   IIOO
+       cur: I/O in progress
+       s: seconds spent for I/O
+
+
+
+FFIIEELLDD DDEESSCCRRIIPPTTIIOONN FFOORR DDIISSKK PPAARRTTIITTIIOONN MMOODDEE
+       reads: Total number of reads issued to this partition
+       read sectors: Total read sectors for partition
+       writes : Total number of writes issued to this partition
+       requested writes: Total number of write requests made for partition
+
+
+
+
+FFIIEELLDD DDEESSCCRRIIPPTTIIOONN FFOORR SSLLAABB MMOODDEE
+       cache: Cache name
+       num: Number of currently active objects
+       total: Total number of available objects
+       size: Size of each object
+       pages: Number of pages with at least one active object
+       totpages: Total number of allocated pages
+       pslab: Number of pages per slab
+
+
+NNOOTTEESS
+       vvmmssttaatt does not require special permissions.
+
+       These reports are intended to help identify system bottlenecks.   Linux
+       vvmmssttaatt does not count itself as a running process.
+
+       All  linux  blocks  are  currently  1024  bytes. Old kernels may report
+       blocks as 512 bytes, 2048 bytes, or 4096 bytes.
+
+       Since procps 3.1.9, vmstat lets you choose units (k, K, m,  M)  default
+       is K (1024 bytes) in the default mode
+
+       vmstat uses slabinfo 1.1    FIXME
+
+FFIILLEESS
+       /proc/meminfo
+       /proc/stat
+       /proc/*/stat
+
+
+SSEEEE AALLSSOO
+       iostat(1), sar(1), mpstat(1), ps(1), top(1), free(1)
+
+
+BBUUGGSS
+       Does not tabulate the block io per device or count the number of system
+       calls.
+
+AAUUTTHHOORRSS
+       Written by Henry Ware <al172@yfn.ysu.edu>.
+       Fabian Frédérick <ffrederick@users.sourceforge.net> (diskstat, slab, partitions...)
+
+
+
+Throatwobbler Ginkgo Labs        27 July 1994                        VMSTAT(8)
